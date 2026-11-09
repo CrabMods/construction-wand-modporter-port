@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ModPorter migration and generated-port report
+    url: https://github.com/CrabMods/modporter/issues
+    about: Include the upstream revision, ModPorter version, candidate version, and relevant logs.
