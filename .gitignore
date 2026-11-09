@@ -1,0 +1,37 @@
+# Gradle
+.gradle/
+build/
+out/
+bin/
+
+# Minecraft development runs
+/run*/
+eclipse/
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.metadata/
+*.launch
+
+# Local diagnostics and crash output
+logs/
+*.log
+crash-reports/
+*.hprof
+hs_err_pid*
+replay_pid*
+
+# Local caches and generated repositories
+.cache/
+mcmodsrepo/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
