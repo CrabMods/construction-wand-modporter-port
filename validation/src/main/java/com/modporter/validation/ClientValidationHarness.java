@@ -228,16 +228,22 @@ public final class ClientValidationHarness {
     }
 
     @SubscribeEvent
-    public static synchronized void onLevelLoad(LevelEvent.Load event) {
-        if (!clientLane() || sealed ||
-                !(event.getLevel() instanceof ClientLevel)) {
+    public static void onLevelLoad(LevelEvent.Load event) {
+        // openWorld waits for the integrated server while the client tick owns
+        // the harness monitor. Server-level events must never acquire it.
+        if (!(event.getLevel() instanceof ClientLevel)) {
             return;
         }
-        worldLoadCount++;
-        if (worldLoadCount > 1) {
-            fail(new IllegalStateException(
-                "More than one client world load was observed: "
-                    + worldLoadCount));
+        synchronized (ClientValidationHarness.class) {
+            if (!clientLane() || sealed) {
+                return;
+            }
+            worldLoadCount++;
+            if (worldLoadCount > 1) {
+                fail(new IllegalStateException(
+                    "More than one client world load was observed: "
+                        + worldLoadCount));
+            }
         }
     }
 
