@@ -75,6 +75,11 @@ public final class ClientValidationHarness {
     private static boolean stopRequested;
     private static boolean overworldSavedAfterStop;
     private static boolean sealed;
+    private static boolean screenshotMouseParked;
+    private static boolean screenshotMouseRestored;
+    private static double screenshotMouseOriginalX;
+    private static double screenshotMouseOriginalY;
+    private static int nativeMouseCallbackCount;
 
     private static List<CreativeModeTab> targetTabs = List.of();
     private static int targetTabIndex;
@@ -219,6 +224,12 @@ public final class ClientValidationHarness {
             } else if (phase == Phase.WAIT_FOR_ROW_RENDER) {
                 if (clientTick <= rowScrollSetAtTick) {
                     return;
+                }
+                event.getGuiGraphics().flush();
+                if (!screenshotMouseParked
+                        || Math.abs(Minecraft.getInstance().mouseHandler.xpos()) > 0.01
+                        || Math.abs(Minecraft.getInstance().mouseHandler.ypos()) > 0.01) {
+                    throw new IllegalStateException("Screenshot hover position was not parked outside the creative grid");
                 }
                 observeRenderedRow(screen);
             }
@@ -548,6 +559,10 @@ public final class ClientValidationHarness {
 
     private static void discoverTabs(Minecraft minecraft) {
         requireCreativeScreen(minecraft);
+        screenshotMouseOriginalX = minecraft.mouseHandler.xpos();
+        screenshotMouseOriginalY = minecraft.mouseHandler.ypos();
+        screenshotMouseParked = true;
+        routeNativeMouseMove(minecraft, 0.0, 0.0);
         String modId = config.expectedModId();
         List<ResourceLocation> expectedIds =
             expectedContent.expectedItemIds();
@@ -798,6 +813,7 @@ public final class ClientValidationHarness {
         if (minecraft.screen
                 instanceof CreativeModeInventoryScreen screen) {
             resetCreativeScroll(screen);
+            restoreScreenshotMouse(minecraft);
             screen.onClose();
         } else {
             throw new IllegalStateException(
@@ -809,6 +825,9 @@ public final class ClientValidationHarness {
 
     private static void finishCleanup(Minecraft minecraft)
             throws Exception {
+        if (!screenshotMouseRestored) {
+            throw new IllegalStateException("Creative screenshot mouse state was not restored");
+        }
         if (minecraft.screen != null) {
             throw new IllegalStateException(
                 "Creative inventory screen remained open during cleanup");
@@ -972,6 +991,8 @@ public final class ClientValidationHarness {
         trace.put("screenshots", new ArrayList<>(screenshotArtifacts));
         trace.put("screenClosed", true);
         trace.put("nativeScreenCloseObserved", true);
+        trace.put("mousePositionRestored", screenshotMouseRestored);
+        trace.put("nativeMouseCallbackCount", nativeMouseCallbackCount);
         trace.put("inventoryBaselineRestored", true);
         trace.put("cleanupFenceTicks", cleanupTicks);
         ReceiptSupport.writeImmutableJson(
@@ -993,6 +1014,31 @@ public final class ClientValidationHarness {
         screen.mouseScrolled(
             screen.width / 2.0, screen.height / 2.0,
             0.0, Math.max(1, maxRow + 1));
+    }
+
+    private static void routeNativeMouseMove(Minecraft minecraft, double x, double y) {
+        try {
+            var callback = minecraft.mouseHandler.getClass().getDeclaredMethod(
+                "onMove", long.class, double.class, double.class);
+            callback.setAccessible(true);
+            callback.invoke(minecraft.mouseHandler, minecraft.getWindow().getWindow(), x, y);
+            nativeMouseCallbackCount++;
+            if (Math.abs(minecraft.mouseHandler.xpos() - x) > 0.01
+                    || Math.abs(minecraft.mouseHandler.ypos() - y) > 0.01) {
+                throw new IllegalStateException("Native mouse callback did not accept the owned UI position");
+            }
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Cannot route the owned UI mouse callback", exception);
+        }
+    }
+
+    private static void restoreScreenshotMouse(Minecraft minecraft) {
+        if (screenshotMouseParked) {
+            requireCreativeScreen(minecraft);
+            routeNativeMouseMove(minecraft, screenshotMouseOriginalX, screenshotMouseOriginalY);
+            screenshotMouseParked = false;
+            screenshotMouseRestored = true;
+        }
     }
 
     private static CreativeModeInventoryScreen requireCreativeScreen(
@@ -1104,6 +1150,8 @@ public final class ClientValidationHarness {
         Map<String, Object> artifact =
             ReceiptSupport.artifact(destination);
         artifact.put("kind", "creative-row-screenshot");
+        artifact.put("guiDrawCommandsFlushed", true);
+        artifact.put("mouseHoverOutsideGrid", true);
         artifact.put("tabId", currentTabId);
         artifact.put("row", currentRow);
         artifact.put("maxRow", maxRow);
@@ -1893,6 +1941,7 @@ public final class ClientValidationHarness {
             if (minecraft.screen
                     instanceof CreativeModeInventoryScreen screen) {
                 resetCreativeScroll(screen);
+                restoreScreenshotMouse(minecraft);
                 screen.onClose();
             } else {
                 minecraft.setScreen(null);
