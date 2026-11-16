@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "  X",
+        " # ",
+        "#  "
+    ],
+    "key": {
+        "X": {
+            "tag": "c:nether_stars"
+        },
+        "#": {
+            "tag": "c:rods/wooden"
+        }
+    },
+    "result": {
+        "id": "constructionwand:infinity_wand"
+    }
+}

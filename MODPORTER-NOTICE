@@ -1,0 +1,29 @@
+ModPorter Candidate Notice
+
+Construction Wand (Unofficial Candidate)
+
+This is a developer research baseline generated from:
+  https://github.com/Theta-Dev/ConstructionWand.git@bc64f11a7d799e921995821878a031bcfde4e22a
+
+Generator:
+  ModPorter 0.4.0
+  JAR: modporter-0.4.0-all.jar
+  JAR SHA-256: 1134fa8ae04d50d904396fc2b59b77d7e668464f8dd63cfcf4c2eb521d37a9f4
+
+Candidate repository:
+  https://github.com/CrabMods/construction-wand-modporter-port
+
+Migration issues:
+  https://github.com/CrabMods/modporter/issues
+
+Validation scope:
+  bootstrap / inventory / logs; not item behavior verified
+
+The original authors, copyright notices, MIT license, source, and assets keep
+their original ownership and licensing. ModPorter does not relicense upstream
+code or assets. This candidate is unofficial and is offered for community
+review; use and redistribution remain subject to the preserved upstream terms.
+
+This generated tree contains no com.modporter.generated compatibility/support sources.
+
+This generated tree contains no canonical shared runtime component.

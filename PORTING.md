@@ -27,8 +27,14 @@ must not be presented as evidence of an official `1.20.1-2.12` binary release.
 | --- | --- |
 | Tool | [ModPorter](https://github.com/CrabMods/modporter) |
 | Migration | Forge 1.20.1 to NeoForge 1.21.1 |
-| Planned public tool version | `0.4.0` |
-| Exact tool release or commit | Pending final ModPorter 0.4.0 release |
+| Required public tool version | `0.4.0` |
+| Official release tag and publication evidence | [v0.4.0 Developer Preview](https://github.com/CrabMods/modporter/releases/tag/v0.4.0) |
+| Official ModPorter source commit | `da08fa920f733f572a45329b25b78a712de47452` |
+| Official ModPorter source Git tree | `6d932849fa41e29880205cb3dfffa2ef53e154a5` |
+| Official release JAR SHA-256 | `1134fa8ae04d50d904396fc2b59b77d7e668464f8dd63cfcf4c2eb521d37a9f4` |
+| Exporter script SHA-256 | `0250f995115805e4b99a85231093a36a7833d6f5c5499e8a865197b6a8bf73d3` |
+| Generated output tree SHA-256 | `7d205dbf45ba74670b7cf7f62d16e5ca6fbf8ee7489d9deda14adf67c9f28d94` |
+| Imported candidate Git tree | Pending |
 | Target Minecraft version | `1.21.1` |
 | Target NeoForge version | `21.1.230` |
 | Java toolchain | `21` |
@@ -40,6 +46,84 @@ migration rules. This repository is an inspectable generated result and a
 learning baseline. It is not intended to accumulate a separate set of
 Construction Wand-specific feature implementations. Repeatable fixes should
 be made in ModPorter and regenerated here.
+
+## Reproducible Candidate Export
+
+Use the final published ModPorter 0.4.0 fat JAR and its matching bounded export
+script. The source checkout must be clean at the pinned upstream commit, and
+the output directory must be new and empty.
+
+The exporter verifies the public versioned release and its published
+`SHA256SUMS` before running the generator. Generated plant compatibility
+sources, when present, remain tracked with their licenses and provenance so
+the public checkout contains the complete build inputs.
+
+```powershell
+$ScratchRoot = 'S:\modporter-candidate-export\constructionwand-0.4.0'
+$env:TEMP = Join-Path $ScratchRoot 'temp'
+$env:TMP = $env:TEMP
+$env:PYTHONDONTWRITEBYTECODE = '1'
+$Upstream = Join-Path $ScratchRoot 'upstream-bc64f11'
+$Export = Join-Path $ScratchRoot 'official-export'
+$ModPorterSource = 'S:\path\to\official-modporter-v0.4.0-source'
+$ModPorterJar = 'S:\path\to\official-modporter-v0.4.0-release\modporter-0.4.0-all.jar'
+$OfficialJarSha256 = '<copy from the official v0.4.0 SHA256SUMS asset>'
+
+New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
+git clone --config core.autocrlf=false --filter=blob:none --no-checkout `
+  https://github.com/Theta-Dev/ConstructionWand.git $Upstream
+git -C $Upstream checkout --detach `
+  bc64f11a7d799e921995821878a031bcfde4e22a
+
+python -B "$ModPorterSource\scripts\export_research_port.py" `
+  --jar $ModPorterJar `
+  --src $Upstream `
+  --out $Export `
+  --repo-url https://github.com/CrabMods/construction-wand-modporter-port `
+  --mod-id constructionwand `
+  --display-name "Construction Wand" `
+  --candidate-version 1.21.1-2.12-modporter.1 `
+  --upstream-url https://github.com/Theta-Dev/ConstructionWand.git `
+  --upstream-commit bc64f11a7d799e921995821878a031bcfde4e22a
+```
+
+The scratch root is explicit on `S:` and remains outside every
+`.modporter/tmp` producer-owned subtree. `$ModPorterSource`, `$ModPorterJar`,
+and `$OfficialJarSha256` must come from the published public `v0.4.0` source
+and release assets. Do not substitute an unpublished or locally built JAR.
+The official `v0.4.0` Developer Preview is acceptable only after its GitHub
+release and published `SHA256SUMS` have been verified.
+
+Review `MODPORTER-PROVENANCE.json`, `MODPORTER-NOTICE`, the preserved MIT
+license and copyright, generated metadata, complete source diff, and output
+inventory before importing the export into this repository. Build and
+packaged-artifact validation must run from the committed public candidate
+tree, and the resulting JAR SHA-256 must be added to this record.
+
+After importing the reviewed official export, retain the repository-owned
+public build adapter at the root: `AGENTS.md`, `mod-build.ps1`, `mod-build.cmd`,
+`scripts/`, and `gradle/modporter-testing.gradle`. Then prepare and check the
+candidate before the public build:
+
+```powershell
+python -B .\scripts\prepare_candidate_import.py `
+  --project-root . `
+  --official-jar-sha256 $OfficialJarSha256
+python -B .\scripts\prepare_candidate_import.py `
+  --project-root . `
+  --official-jar-sha256 $OfficialJarSha256 `
+  --check
+.\mod-build.ps1 ensure
+.\mod-build.ps1 build
+```
+
+The preparation command validates the official `0.4.0` provenance and reviewed
+upstream pin, changes only the generated `build.gradle`, and applies
+`gradle/modporter-testing.gradle` as one canonical top-level line. It does not
+patch Java or Kotlin. The canonical launcher checks that exact application
+again before any Gradle command. CI needs no `gh` command, GitHub token, or
+private framework credentials; a maintainer's optional private sidecar stays
+outside Git.
 
 ## Validation Record
 
@@ -156,3 +240,10 @@ developer-preview
 unofficial-port
 ```
 
+
+## Import scope
+
+The imported production code and resources match the generated export byte for
+byte. The public build hook, verification project, repository metadata, and
+developer documentation are maintained separately. Uncompiled upstream images and historical build notes are excluded from this developer baseline; they remain available at the
+pinned upstream revision.

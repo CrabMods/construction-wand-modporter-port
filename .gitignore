@@ -1,37 +1,31 @@
-# Gradle
+/build/
 .gradle/
-build/
-out/
-bin/
-
-# Minecraft development runs
-/run*/
-eclipse/
-
-# IDEs
+/run/
+/bin/
+/out/
+/validation/build/
+/validation/run/
+/validation/target-local.properties
+# Track generated plant compatibility sources required by public builds.
+/.modporter/*
+!/.modporter/legacy-plant-compat/
+!/.modporter/legacy-plant-compat.required
+/.modporter/legacy-plant-compat/build/
+/.modporter/legacy-plant-compat/.gradle/
 .idea/
+.settings/
+.metadata/
 *.iml
 *.ipr
 *.iws
+*.launch
 .classpath
 .project
-.settings/
-.metadata/
-*.launch
-
-# Local diagnostics and crash output
-logs/
 *.log
-crash-reports/
-*.hprof
 hs_err_pid*
-replay_pid*
 
-# Local caches and generated repositories
-.cache/
-mcmodsrepo/
-
-# Operating system files
-.DS_Store
-Thumbs.db
-
+# Optional local private build sidecar and Python cache
+/.minecraft-mod-testing/
+/.agents/skills/minecraft-mod-testing/
+/.modporter/private-framework-local/
+__pycache__/

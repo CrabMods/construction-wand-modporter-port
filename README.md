@@ -19,7 +19,7 @@ are expected before wider distribution.
 
 ## Current Status
 
-Release preparation is in progress as of November 9, 2026. The generated
+Release preparation is in progress as of November 16, 2026. The generated
 source used for the strict benchmark has passed the source-project checks
 below. The public candidate source package and packaged JAR have not yet been
 built in this repository, so no binary is currently offered here.
@@ -54,9 +54,15 @@ checklist.
 - Upstream source target: Minecraft `1.20.1`, Forge `47.0.19`
 - Generated target: Minecraft `1.21.1`, NeoForge `21.1.230`, Java `21`
 
-The pinned source contains version fields for `2.12`. That identifies the
-source revision used by this port; it is not a claim that an official
-Construction Wand `1.20.1-2.12` release exists.
+The candidate version records the `2.12` version fields in the pinned public
+source.
+
+As checked on November 16, 2026, the official
+[download catalog](https://www.curseforge.com/minecraft/mc-mods/construction-wand/files/all)
+lists `2.12` for Minecraft `1.20.2` and `2.11` for `1.20.1`, with no
+Minecraft `1.21.1` file listed. The upstream repository also has a `1.21`
+source branch. This research candidate records the pinned `1.20` source above
+as its reproducible migration baseline.
 
 ## Repository and Branches
 
@@ -84,4 +90,20 @@ normal reporting process.
 The upstream Construction Wand source is distributed under the MIT License,
 Copyright (c) 2021 ThetaDev. The exact upstream license text is preserved in
 [LICENSE](LICENSE).
+
+The public build and runtime adapter files listed in
+[MODPORTER-ADAPTER-NOTICE](MODPORTER-ADAPTER-NOTICE) are separate ModPorter
+components under the Apache License 2.0; see
+[MODPORTER-ADAPTER-LICENSE](MODPORTER-ADAPTER-LICENSE). The independent
+validation project is covered by
+[validation/LICENSE](validation/LICENSE) and
+[validation/THIRD_PARTY_NOTICES.md](validation/THIRD_PARTY_NOTICES.md).
+These Apache-licensed layers do not relicense the generated upstream mod source
+or assets, which remain governed by the original MIT License. Any separately
+generated ModPorter support sources are identified by their own
+`MODPORTER-SUPPORT-LICENSE` and `MODPORTER-SUPPORT-NOTICE` files.
+
+Shared compatibility libraries carry their corresponding source, component
+licenses, and provenance inside their JARs. Their per-file terms are recorded
+in the generated porting manifest.
 

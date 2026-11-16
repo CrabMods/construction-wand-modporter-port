@@ -1,0 +1,145 @@
+
+
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id("net.neoforged.moddev") version "2.0.140"
+}
+
+version = '1.21.1-2.12-modporter.1'
+group = "${author}.${modid}"
+archivesBaseName = "${modid}"
+
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+neoForge {
+    version = project.neo_forge_version
+
+    parchment {
+        minecraftVersion = "1.21.1"
+        mappingsVersion = "2024.11.17"
+    }
+
+    runs {
+        client {
+            client()
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+        clientWorld {
+            client()
+            programArguments.addAll '--quickPlayPath', 'quickplay/modporter_smoke_world.json', '--quickPlaySingleplayer', 'modporter_smoke_world'
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+    }
+
+    mods {
+        "${project.mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+tasks.matching { it.name == 'prepareGameTestServerRun' }.configureEach {
+    doLast {
+        def gameTestStructures = file('src/main/resources/gameteststructures')
+        if (gameTestStructures.exists()) {
+            copy {
+                from gameTestStructures
+                into file('run/gameteststructures')
+            }
+        }
+    }
+}
+
+repositories {
+    maven {
+        url = "https://maven.blamejared.com"
+    }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
+}
+
+dependencies {
+    // NeoForge dependency is now configured via neoForge { } block
+
+    compileOnly "mezz.jei:jei-1.21.1-common-api:19.21.2.313"
+    compileOnly "mezz.jei:jei-1.21.1-neoforge:19.21.2.313"
+    runtimeOnly "mezz.jei:jei-1.21.1-neoforge:19.21.2.313"
+
+    compileOnly "vazkii.botania:botania-neoforge-1.21.1:452-SNAPSHOT"
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": archivesBaseName,
+                "Specification-Vendor": "${author}",
+                "Specification-Version": "1", // We are version 1 of ourselves
+                "Implementation-Title": archivesBaseName,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor" :"${author}",
+        ])
+    }
+}
+
+// Example configuration to allow publishing using the maven-publish task
+// This is the preferred method to reobfuscate your jar file
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+//publish.dependsOn('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+// modporter-publication-policy-v1
+tasks.withType(org.gradle.api.tasks.bundling.AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+tasks.withType(org.gradle.api.tasks.bundling.Jar).configureEach {
+    from('LICENSE') { into 'META-INF' }
+    from('MODPORTER-NOTICE') { into 'META-INF' }
+    from('MODPORTER-PROVENANCE.json') { into 'META-INF' }
+
+
+}
+
+apply from: 'gradle/modporter-testing.gradle'

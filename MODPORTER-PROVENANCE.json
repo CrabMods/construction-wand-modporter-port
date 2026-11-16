@@ -1,0 +1,58 @@
+{
+  "candidate": {
+    "displayName": "Construction Wand (Unofficial Candidate)",
+    "issues": "https://github.com/CrabMods/modporter/issues",
+    "kind": "developer research baseline",
+    "modId": "constructionwand",
+    "repository": "https://github.com/CrabMods/construction-wand-modporter-port",
+    "validationScope": "bootstrap / inventory / logs; not item behavior verified",
+    "version": "1.21.1-2.12-modporter.1"
+  },
+  "generatedSupportSources": [],
+  "generator": {
+    "invocation": [
+      "java",
+      "-jar",
+      "modporter-0.4.0-all.jar",
+      "port",
+      "--src",
+      "<clean-git-archive>",
+      "--out",
+      "<new-empty-output>",
+      "--add-tool-credit"
+    ],
+    "jarFile": "modporter-0.4.0-all.jar",
+    "jarSha256": "1134fa8ae04d50d904396fc2b59b77d7e668464f8dd63cfcf4c2eb521d37a9f4",
+    "license": "Apache-2.0",
+    "name": "ModPorter",
+    "release": {
+      "checksumsAssetId": 753349090,
+      "checksumsSha256": "ce63491c10f56991376c637714733bf4500449731b2e26afaa4a970114f795c5",
+      "checksumsUrl": "https://github.com/CrabMods/modporter/releases/download/v0.4.0/SHA256SUMS",
+      "id": 446586135,
+      "jarAssetId": 753349091,
+      "jarAssetUrl": "https://github.com/CrabMods/modporter/releases/download/v0.4.0/modporter-0.4.0-all.jar",
+      "publishedAt": "2026-11-16T03:50:07Z",
+      "tag": "v0.4.0",
+      "url": "https://github.com/CrabMods/modporter/releases/tag/v0.4.0"
+    },
+    "repository": "https://github.com/CrabMods/modporter",
+    "version": "0.4.0"
+  },
+  "policy": {
+    "implementationTimestampRemoved": true,
+    "metadataAndPackagingEditsOnly": true,
+    "modLogicHandPatches": false,
+    "reproducibleArchiveFlags": true,
+    "upstreamRelicensed": false
+  },
+  "runtimeComponents": [],
+  "schemaVersion": 1,
+  "supportLicense": null,
+  "upstream": {
+    "commit": "bc64f11a7d799e921995821878a031bcfde4e22a",
+    "license": "MIT",
+    "repository": "https://github.com/Theta-Dev/ConstructionWand.git",
+    "tree": "a69273532d7b74bbcdccca6ec349fe3e1d28a95c"
+  }
+}
