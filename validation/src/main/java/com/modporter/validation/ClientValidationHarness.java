@@ -1080,14 +1080,6 @@ public final class ClientValidationHarness {
                 height = image.getHeight();
                 image.writeToFile(temporary);
             }
-            inspection = inspectDecodedPng(
-                temporary,
-                screen,
-                width,
-                height,
-                minecraft.getMainRenderTarget().width,
-                minecraft.getMainRenderTarget().height
-            );
             try {
                 Files.move(
                     temporary,
@@ -1097,6 +1089,14 @@ public final class ClientValidationHarness {
             } catch (AtomicMoveNotSupportedException exception) {
                 Files.move(temporary, destination);
             }
+            inspection = inspectDecodedPng(
+                destination,
+                screen,
+                width,
+                height,
+                minecraft.getMainRenderTarget().width,
+                minecraft.getMainRenderTarget().height
+            );
         } finally {
             Files.deleteIfExists(temporary);
         }
@@ -1287,6 +1287,12 @@ public final class ClientValidationHarness {
                     evidence.put("sourceBackedException",
                         expectedContent.iconEvidenceException(itemId));
                 } else {
+                    Map<String, Object> failedImage = ReceiptSupport.artifact(screenshot);
+                    failedImage.put("kind", "failed-creative-row-screenshot");
+                    screenshotArtifacts.add(failedImage);
+                    ReceiptSupport.writeImmutableJson(
+                        screenshot.resolveSibling(screenshot.getFileName() + ".failure.json"),
+                        Map.of("image", failedImage, "slot", evidence));
                     throw new IllegalStateException(
                         "Decoded screenshot lacks nonblank icon evidence for occupied slot "
                             + itemId + " evidenceId=" + evidenceId
