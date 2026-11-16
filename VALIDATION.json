@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "validatedOn": "2026-11-16",
+  "artifact": {
+    "filename": "constructionwand-1.21.1-2.12-modporter.1.jar",
+    "bytes": 215886,
+    "sha256": "919fa9757f5f7bfe21b4c799a737bee3f5c70196cee1dbeff80bb569ceb95ecb"
+  },
+  "sourceBuildCommit": "13317c472103caa2e6355cf01c4b43ae0887a1ba",
+  "sourceBuildTree": "375b0911971ed52bdd93ecfeca79e223ec13c74b",
+  "generatorVersion": "0.4.0",
+  "generatorJarSha256": "1134fa8ae04d50d904396fc2b59b77d7e668464f8dd63cfcf4c2eb521d37a9f4",
+  "allProductionFilesMatchGeneratedExport": true,
+  "modLogicHandPatches": false,
+  "lanes": {
+    "server": {
+      "passed": true,
+      "processStarts": 1,
+      "worldLoads": 1,
+      "scenarios": [
+        "target-jar-origin",
+        "dedicated-server-ready-save-stop"
+      ],
+      "cleanupFailures": 0,
+      "unexplainedLogFindings": 0,
+      "knownDependencyFindings": [],
+      "runReceiptSha256": "e8a577b4b07f06cbcf641a021e98b39654e3c0e01cc396ee3756140d3a2eea0c",
+      "harnessReceiptSha256": "4741f5817b716bfbc2c6e4ca9e7e15fe52f7330b304293dffff4e4e4aa198a30",
+      "runtimeLogSha256": "50d1feff55b72704223270ff0f79520cce47de8e256179e22adf1484f7d032fc",
+      "harnessSourceRootSha256": "5645f971783c9662fae5a7074c1639f848cf2f644d4f3f848b6fe28f4ba7dc7d"
+    },
+    "client": {
+      "passed": true,
+      "processStarts": 1,
+      "worldLoads": 1,
+      "scenarios": [
+        "target-jar-origin",
+        "client-world-ready",
+        "creative-inventory-rendered",
+        "mod-creative-tabs-all-rows-rendered"
+      ],
+      "cleanupFailures": 0,
+      "unexplainedLogFindings": 0,
+      "knownDependencyFindings": [],
+      "runReceiptSha256": "1844dcf2cb52eb31816bd2c40981cfc2f51f153d2c3132f6f72499d8fbb45af5",
+      "harnessReceiptSha256": "ad9fab77207fd65dfa9530bed570926f4c39bdff9e0916896ea68d15915edc7b",
+      "runtimeLogSha256": "1e9e52bb68ebefaf6e18bd1721a75b7f4f8e6c1323d3fce9effc0af38d7297a8",
+      "harnessSourceRootSha256": "5645f971783c9662fae5a7074c1639f848cf2f644d4f3f848b6fe28f4ba7dc7d",
+      "expectedRegisteredItemCount": 6,
+      "creativeTargetStackCount": 6,
+      "creativeTabCount": 2,
+      "screenshotCount": 26,
+      "occupiedSlotCount": 1169,
+      "occupiedSlotIconEvidenceCount": 1169,
+      "occupiedSlotIconExceptionCount": 0,
+      "targetSlotCount": 6,
+      "targetSlotIconEvidenceCount": 6,
+      "targetSlotIconExceptionCount": 0,
+      "serverPlayerStateRestored": true,
+      "pristineWorldUnchanged": true,
+      "uiMouseStateRestored": true
+    }
+  },
+  "uniqueEvidenceFilesRehashed": 49,
+  "scope": "Packaged JAR origin, bootstrap, saved-world load, native creative inventory and icon rendering, strict source-bound logs, and cleanup. Detailed item and integration behavior remains for developer review."
+}

@@ -19,28 +19,26 @@ are expected before wider distribution.
 
 ## Current Status
 
-Release preparation is in progress as of November 16, 2026. The generated
-source used for the strict benchmark has passed the source-project checks
-below. The public candidate source package and packaged JAR have not yet been
-built in this repository, so no binary is currently offered here.
+The `1.21.1` baseline was generated with the official ModPorter 0.4.0 release.
+Candidate `1.21.1-2.12-modporter.1` passed exact packaged-JAR validation on
+Minecraft 1.21.1, NeoForge 21.1.230, and Java 21.
 
-| Verification | Strict source-project result |
+| Verification | Recorded result |
 | --- | --- |
-| Compile against Minecraft 1.21.1 and NeoForge 21.1.230 | Passed |
-| Dedicated server start and controlled stop | Passed |
-| Client boot and saved-world load | Passed |
-| Creative inventory opened; all displayed stacks in the relevant tabs were browsed | Passed |
-| Strict log audit with no unexplained porter-related warnings or errors | Passed |
-| Source-project GameTest run | Passed, 1/1 required test |
+| Public source build | Passed |
+| Dedicated server start, save, and controlled stop | Passed |
+| Client boot, saved-world load, and controlled save | Passed |
+| Native creative inventory and item coverage | All 6 registered items; 2 tabs; 26 rendered-row screenshots |
+| Occupied-slot icon evidence | 1,169/1,169 observations; zero icon exceptions |
+| Strict log audit | Zero unexplained warnings or errors |
+| State cleanup | Client/server inventory and mouse state restored; original fixture unchanged |
 
+The strict source-project baseline also passed its required GameTest.
+[VALIDATION.json](VALIDATION.json) binds these results to the exact JAR checksum;
+[PORTING.md](PORTING.md) records the source pins and generation commands.
 These checks cover project loading and the in-game item interface. Detailed
-behavior of individual items and blocks is the next area for developer review
-and focused playtesting; it is outside this verification round.
-
-Packaged-candidate validation will be recorded after an exact JAR is built and
-tested from a clean `mods` directory rather than from Gradle source sets. See
-[PORTING.md](PORTING.md) for provenance, validation boundaries, and the release
-checklist.
+item, block, recipe, and integration behavior remains for developer review and
+focused playtesting.
 
 ## Provenance
 
